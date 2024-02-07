@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href='{{ url_for("static", filename="styles/default.css") }}'>
+  <link rel="stylesheet" href='{{ url_for("static", filename="styles/index.css") }}'>
+  <script src="https://kit.fontawesome.com/692dafed5c.js" crossorigin="anonymous"></script>
+  <title>Healthcare</title>
+</head>
+<body>
+  <div class="pageWrapper">
+    <div class="header">
+      <div>
+        <img src='{{ url_for("static", filename="icon/200x200icon.png") }}' alt="Icon">
+      </div>
+      <div>
+        <h1>Public Healthcare System</h1>
+        <i>For public healthcare availibility</i>
+      </div>
+      <div>
+        <a href="/login"><button><i class="fa-solid fa-user"></i> Login</button></a>
+      </div>
+    </div>
+    <div class="content">
+      <div class="mainContent">
+        <div>
+          <h2>About Us</h2>
+          <p>Public Healthcare System is a service for anyone who wants easily accessible healthcare. We can offer you appointments with professionals in their fields. Whether you need a surgeon, pediatrician, gynecologist or any specific doctor we are always here for you.</p>
+          <p>Sounds good? Don't waste time and register! Registration is free and we do not share your private information with any third party.</p>
+          <p>Or perhaps you are a skilled doctor with practical skills and want to join? Create a doctor account! All you have to do is enter your specification and then wait until you are approved by our admin. After that you will be availible for anyone to make an appointment with you.</p>
+        </div>
+        <div>
+          <p>More content :)</p>
+        </div>
+      </div>
+      <div class="registerContainer">
+        <h4>Register now!</h4>
+        <a href="/reigster"><button><i class="fa-solid fa-plus"></i> Patient</button></a>
+        <a href="/reigster?doc=yes"><button><i class="fa-solid fa-plus"></i> Doctor</button></a>
+      </div>
+    </div>
+    <div class="footer">
+      <p>Public Healthcare System</p>
+      <p>2024</p>
+    </div>
+  </div>
+</body>
+</html>

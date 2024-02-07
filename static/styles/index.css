@@ -1,0 +1,99 @@
+div.pageWrapper {
+  display: flex;
+  height: 100%;
+  width: 80%;
+  margin: auto;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+div.header {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  background-color: white;
+  gap: 5px;
+  box-shadow: black 3px 3px  3px;
+}
+
+div.header div {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+div.header div:nth-child(2) {
+  flex: 4;
+  align-items: flex-start;
+  padding-left: 10%;
+  border-color: dodgerblue;
+  flex-direction: column;
+  border-width: 1px;
+  border-style: hidden hidden hidden solid;
+  text-align: left;
+}
+
+button {
+  background-color: whitesmoke;
+  border: red 3px solid;
+  padding: 10px;
+  text-decoration: none !important;
+  font-weight: 700;
+  color: black !important;
+  transition:  background-color 0.3s;
+}
+
+button:hover {
+  background-color: red;
+}
+
+h1 {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+div.content {
+  flex: 3;
+  width: 90%;
+  background-color: whitesmoke;
+  display: flex;
+  flex-direction: row;
+}
+
+div.mainContent {
+  flex: 3;
+  display: flex;
+  padding: 5px;
+  gap: 12px;
+  flex-direction: column;
+}
+
+div.registerContainer {
+  flex: 1;
+  display: flex;
+  border-color: rgb(75, 80, 115);
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  border-width: 1px;
+  border-style: hidden hidden hidden solid;
+}
+
+div.footer {
+  flex: 1;
+  display: flex;
+  padding: 3%;
+  width: 100%;
+  background-color: white;
+  box-shadow: 0px -5px 30px #141414;
+  flex-direction: row;
+  justify-content: space-around;
+  position: absolute;
+  bottom: 0px;
+  font-size: 11px;
+  color: #646464;
+}

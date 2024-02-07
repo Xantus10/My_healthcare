@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href='{{ url_for("static", filename="styles/default.css") }}'>
+  <link rel="stylesheet" href='{{ url_for("static", filename="styles/base.css") }}'>
+  <script src='{{ url_for("static", filename="scripts/deleteAccountWindow.js") }}'></script>
+  {% block childStylesheet %}{% endblock %}
+  <script src="https://kit.fontawesome.com/692dafed5c.js" crossorigin="anonymous"></script>
+  <title>Healthcare</title>
+</head>
+<body>
+  <div id="deletePopup">
+    <h3>Are you sure you want to delete your account?</h3>
+    <div>
+      <form action="/delete" method="post">
+        <input type="hidden" name="CSRFToken" value="{% block CSRFToken %}{% endblock %}">
+        <button type="submit">Yes, delete</button>
+      </form>
+    </div>
+    <div>
+      <button onclick="hideDeleteWindow();">No</button>
+    </div>
+  </div>
+  <div class="pageWrapper">
+    <div class="header">
+      <div>
+        <form action="/logout" method="post">
+          <input type="hidden" name="CSRFToken" value="{{ self.CSRFToken() }}">
+          <button type="submit"><i class="fa-solid fa-right-from-bracket"></i>Sign out</button>
+        </form>
+      </div>
+      <div>
+        <h1>Welcome to Healthcare!</h1>
+      </div>
+      <div>
+        <button onclick="showDeleteWindow();"></button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
