@@ -1,0 +1,1 @@
+/* Make the js check for all values are submitted, do the same for register */

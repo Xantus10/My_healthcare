@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href='{{ url_for("static", filename="styles/default.css") }}'>
+  <link rel="stylesheet" href='{{ url_for("static", filename="styles/login.css") }}'>
+  <script src="https://kit.fontawesome.com/692dafed5c.js" crossorigin="anonymous"></script>
+  <title>Healthcare</title>
+</head>
+<body>
+  <div class="pageWrapper">
+    <div class="container">
+      <h2>Login</h2>
+      <form action="/login" method="post">
+        <i class="fa-solid fa-user"></i>
+        <input type="text" name="username" id="username" placeholder="Username"><br>
+        <i class="fa-solid fa-lock"></i>
+        <input type="password" name="password" id="password" placeholder="Password">
+        <input type="submit" value="Log in">
+        <p>{{retmsg}}</p>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

@@ -56,7 +56,7 @@ h1 {
 }
 
 div.content {
-  flex: 3;
+  flex: 4;
   width: 90%;
   background-color: whitesmoke;
   display: flex;

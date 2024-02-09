@@ -8,6 +8,11 @@ html {
   background-color: rgb(240, 240, 210);
 }
 
+body {
+  height: 100%;
+  margin: 0px;
+}
+
 button {
   cursor: pointer;
 }

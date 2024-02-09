@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href='{{ url_for("static", filename="styles/default.css") }}'>
+  <link rel="stylesheet" href='{{ url_for("static", filename="styles/register.css") }}'>
+  <script src="https://kit.fontawesome.com/692dafed5c.js" crossorigin="anonymous"></script>
+  <script src='{{ url_for("static", filename="scripts/register.js") }}'></script>
+  <title>Healthcare</title>
+</head>
+<body>
+  <div class="pageWrapper">
+    <div class="container">
+      <h2>Register</h2>
+      <form action="/register" method="post">
+        <i class="fa-solid fa-file-lines"></i>
+        <input type="text" name="firstName" id="firstName" placeholder="First name"><br>
+        <i class="fa-solid fa-file-lines"></i>
+        <input type="text" name="lastName" id="lastName" placeholder="Last name"><br>
+        <i class="fa-solid fa-user"></i>
+        <input type="text" name="username" id="username" placeholder="Username"><br>
+        <i class="fa-solid fa-lock"></i>
+        <input type="password" name="password" id="password" placeholder="Password"><br>
+        <input type="checkbox" name="isDoctor" id="isDoctor" value="yes" onclick="showSpec();">
+        <label for="isDoctor">Are you a doctor?</label><br><br>
+        <i id="specI" class="fa-solid fa-notes-medical"></i>
+        <input type="text" name="specialization" id="specialization" placeholder="Specialization (surgeon, pediatrician, etc.)">
+        <input type="submit" value="Register">
+        <p>{{retmsg}}</p>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
