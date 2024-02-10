@@ -38,7 +38,7 @@ def initialize():
     db = sqlite3.connect('data/database.db')
     cursor = db.cursor()
     # Table for users (Privilege level: 1-Admin 2-VerifiedDoctor 3-Patient 4-UnverifiedDoctor 10-RejectedDoctor)
-    cursor.execute('CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL UNIQUE, firstName TEXT NOT NULL, lastName TEXT NOT NULL, salt TEXT NOT NULL, password TEXT NOT NULL, privilegeLevel INT NOT NULL, specialization TEXT);')
+    cursor.execute('CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL UNIQUE, firstName TXT NOT NULL, lastName TEXT NOT NULL, salt TEXT NOT NULL, password TEXT NOT NULL, privilegeLevel INT NOT NULL, specialization TEXT);')
     # Table for appointments
     cursor.execute('CREATE TABLE IF NOT EXISTS appointments (id INTEGER PRIMARY KEY AUTOINCREMENT, patientId INTEGER NOT NULL, doctorId INTEGER NOT NULL, CONSTRAINT FK_patientId FOREIGN KEY(patientId) REFERENCES users(id),  CONSTRAINT FK_doctorId FOREIGN KEY(doctorId) REFERENCES users(id));')
     # Authentication table (With Session cookie, IP address, Session CSRF Token)
@@ -51,13 +51,13 @@ def initialize():
   return True
 
 
-# Log in a user; return ssid(id of a row in db),SessionAuthCookie,CSRFToken
+# Log in a user; return ssid(id of a row in db),SessionAuthCookie,CSRFToken,userPrivLevel
 def logInUser(username, password, ipAddress):
   try:
     db = sqlite3.connect('data/database.db')
     cursor = db.cursor()
     # Get id, salt and password of a username
-    account = cursor.execute('SELECT id, salt, password FROM doctors WHERE username = ?;', (username,))
+    account = cursor.execute('SELECT id, salt, password, privilegeLevel FROM users WHERE username = ?;', (username,))
     account = account.fetchone()
     # Check if the username exists
     if account:
@@ -66,7 +66,7 @@ def logInUser(username, password, ipAddress):
         # Check if someone is logged in, however their browser does not remember 'auth' cookie, then remove their record
         checkloggedin = cursor.execute('SELECT ssid FROM auth WHERE userId = ?;', (account[0],))
         if (checkloggedin.fetchone()):
-          cursor.execute('DELETE FROM loggedInDoctors WHERE userId = ?;', (account[0],))
+          cursor.execute('DELETE FROM auth WHERE userId = ?;', (account[0],))
         # Authorization cookie
         cookie = token_hex(32)
         # CSRF token
@@ -74,26 +74,43 @@ def logInUser(username, password, ipAddress):
         # INSERT into authorization table
         cursor.execute('INSERT INTO auth(userId, cookie, ipAddress, CSRFToken) VALUES(?, ?, ?, ?);', (account[0], cookie, ipAddress, csrftoken))
         # Get the SSID of the record in auth table
-        ssid = cursor.execute('SELECT ssid FROM loggedInDoctors WHERE userId = ?;', (account[0],))
+        ssid = cursor.execute('SELECT ssid FROM auth WHERE userId = ?;', (account[0],))
         ssid = ssid.fetchone()
         if ssid:
-          return ssid[0], cookie, csrftoken
+          db.commit()
+          return ssid[0], cookie, csrftoken, account[3]
         logger.log(f'Error in SQL INSERT in "logInUser()", user should have been inserted, however, their ssid was not found')
       else:
         logger.log(f'Password didn\'t match for duser {username}', 2)
     else:
-      logger.log(f'Unknown dusername: {username}', 2)
+      logger.log(f'Unknown username: {username}', 2)
     db.commit()
   except sqlite3.Error as e:
     logger.log(f'An error in SQL syntax occurred while logging in a user; Error message: {e}; Data: {(username, password)}')
   except Exception as e:
     logger.log(f'An unexpected error occurred while logging in a user; Error message: {e}')
-  return -1, '', ''
+  return -1, '', '', -1
 
 
 # Function for anything, that needs authorization
-def authorize(ssid, cookie, ipAddress, csrftoken):
-  pass
+def authorize(ssid, cookie, ipAddress, csrftoken=''):
+  try:
+    db = sqlite3.connect('data/database.db')
+    cursor = db.cursor()
+    if csrftoken == '':
+      account = cursor.execute('SELECT userId from auth WHERE ssid = ? AND cookie = ? AND ipAddress = ?;', (ssid, cookie, ipAddress))
+    else:
+      account = cursor.execute('SELECT userId from auth WHERE ssid = ? AND cookie = ? AND ipAddress = ? AND CSRFToken = ?;', (ssid, cookie, ipAddress, csrftoken))
+    account = account.fetchone()
+    # Check if the username exists
+    if account:
+      return account[0]
+    db.commit()
+  except sqlite3.Error as e:
+    logger.log(f'An error in SQL syntax occurred while logging in a user; Error message: {e}; Data: {(ssid, cookie, ipAddress, csrftoken)}')
+  except Exception as e:
+    logger.log(f'An unexpected error occurred while logging in a user; Error message: {e}')
+  return -1
 
 
 # Log out a user
@@ -120,6 +137,16 @@ def checkIfUsernameExists(username):
   return True
 
 
+def selectall(): # Used for displaying data REMOVE FROM FINAL VERSION
+  db = sqlite3.connect('data/database.db')
+  cursor = db.cursor()
+  # If username is in doctors
+  res1 = cursor.execute('SELECT * FROM users;')
+  res1 = res1.fetchall()
+  db.commit()
+  return res1
+
+
 # Add a new user (Privilege level: 1-Admin 2-VerifiedDoctor 3-Patient 4-UnverifiedDoctor), Only doctors have specialization
 def addUser(username, firstName, lastName, password, privilegeLevel, specialization='NULL'):
   try:
@@ -133,12 +160,12 @@ def addUser(username, firstName, lastName, password, privilegeLevel, specializat
     # Data for INSERT
     data = (username, firstName, lastName, salt, hashed, privilegeLevel, specialization)
     # INSERT into users table (All doctors have to get validated by admin, to obtain privilegeLevel 2)
-    cursor.execute('INSERT INTO users(username, firstName, lastName, salt, password, specialization) VALUES(?, ?, ?, ?, ?, ?, ?);', data)
+    cursor.execute('INSERT INTO users(username, firstName, lastName, salt, password, privilegeLevel, specialization) VALUES(?, ?, ?, ?, ?, ?, ?);', data)
     db.commit()
   except sqlite3.Error as e:
-    logger.log(f'An error in SQL syntax occurred while adding a doctor; Error message: {e}; Data: {(username, firstName, lastName, salt, password, specialization)}')
+    logger.log(f'An error in SQL syntax occurred while adding a user {privilegeLevel}; Error message: {e}; Data: {(username, firstName, lastName, salt, password, specialization)}')
   except Exception as e:
-    logger.log(f'An unexpected error occurred while adding a doctor; Error message: {e}')
+    logger.log(f'An unexpected error occurred while adding a user {privilegeLevel}; Error message: {e}')
   return True
 
 

@@ -6,6 +6,7 @@
   <link rel="stylesheet" href='{{ url_for("static", filename="styles/default.css") }}'>
   <link rel="stylesheet" href='{{ url_for("static", filename="styles/login.css") }}'>
   <script src="https://kit.fontawesome.com/692dafed5c.js" crossorigin="anonymous"></script>
+  <script src='{{ url_for("static", filename="scripts/login.js") }}'></script>
   <title>Healthcare</title>
 </head>
 <body>
@@ -14,11 +15,12 @@
       <h2>Login</h2>
       <form action="/login" method="post">
         <i class="fa-solid fa-user"></i>
-        <input type="text" name="username" id="username" placeholder="Username"><br>
+        <input type="text" name="username" id="username" placeholder="Username" oninput="checkAll();"><br>
         <i class="fa-solid fa-lock"></i>
-        <input type="password" name="password" id="password" placeholder="Password">
-        <input type="submit" value="Log in">
+        <input type="password" name="password" id="password" placeholder="Password" oninput="checkAll();">
+        <input id="submit" type="submit" value="Log in" disabled>
         <p>{{retmsg}}</p>
+        <p id="msg"></p>
       </form>
     </div>
   </div>

@@ -14,7 +14,7 @@ def log(msg: str, type=3):
       # Use [U] for Unidentified logs
       descriptionChar = 'U'
     # Format the log Into: [ID] (date time) - message with newlines replaced with ;;
-    toLog = f'[{descriptionChar}] ({datetime.strftime("%d.%m.%Y %H:%M:%S")}) - {msg.replace(chr(10), ";;")}'
+    toLog = f'[{descriptionChar}] ({datetime.now().strftime("%d.%m.%Y %H:%M:%S")}) - {msg.replace(chr(10), ";;")}{chr(10)}'
     # Write to logfile
     with open('data/log.txt', 'a') as f:
       f.write(toLog)
