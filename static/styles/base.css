@@ -1,0 +1,66 @@
+#deletePopup {
+  display: none;
+  position: fixed;
+  background-color: white;
+  top: 50%;
+  left: 50%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 30%;
+  width: 40%;
+  height: 40%;
+  transform: translate(-50%, -50%);
+  z-index: 20;
+}
+
+.deleteButtonWrapper {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.pageWrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.header div {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header div:nth-child(2) {
+  flex: 4;
+}
+
+button {
+  width: 110px;
+  height: 50px;
+  color: whitesmoke;
+  font-weight: 500;
+  background-color: blue;
+}
+
+button[type="submit"] {
+  background-color: rgb(160, 0, 0);
+}
+
+.content {
+  flex: 5;
+  width: 80%;
+  display: flex;
+}

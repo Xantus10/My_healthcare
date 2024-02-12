@@ -13,14 +13,16 @@
 <body>
   <div id="deletePopup">
     <h3>Are you sure you want to delete your account?</h3>
-    <div>
-      <form action="/delete" method="post">
-        <input type="hidden" name="CSRFToken" value="{% block CSRFToken %}{% endblock %}">
-        <button type="submit">Yes, delete</button>
-      </form>
-    </div>
-    <div>
-      <button onclick="hideDeleteWindow();">No</button>
+    <div class="deleteButtonWrapper">
+      <div>
+        <form action="/delete" method="post">
+          <input type="hidden" name="CSRFToken" value="{% block CSRFToken %}{% endblock %}">
+          <button type="submit"><i class="fa-solid fa-trash-can"></i> Yes, delete</button>
+        </form>
+      </div>
+      <div>
+        <button onclick="hideDeleteWindow();">No</button>
+      </div>
     </div>
   </div>
   <div class="pageWrapper">
@@ -28,15 +30,22 @@
       <div>
         <form action="/logout" method="post">
           <input type="hidden" name="CSRFToken" value="{{ self.CSRFToken() }}">
-          <button type="submit"><i class="fa-solid fa-right-from-bracket"></i>Sign out</button>
+          <button type="submit"><i class="fa-solid fa-right-from-bracket"></i> Sign out</button>
         </form>
       </div>
       <div>
         <h1>Welcome to Healthcare!</h1>
       </div>
       <div>
-        <button onclick="showDeleteWindow();"></button>
+        <button onclick="showDeleteWindow();">Delete account</button>
       </div>
+    </div>
+    <div class="content">
+      {% block content %}{% endblock %}
+    </div>
+    <div class="footer">
+      <p>Public Healthcare System</p>
+      <p>2024</p>
     </div>
   </div>
 </body>

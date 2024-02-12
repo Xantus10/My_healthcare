@@ -3,16 +3,63 @@ from os import path
 
 import dbHandler
 
-# TODO: Login page + functionality, base.html+css, Delete window + functionality, Admin functionality, Doctor page + rejected page, 
-# FUTURE TODO: Will have to handle - what if doctor deletes his account and user has open login window with availible doctor and then he scheldules an appointment with him and other corner cases
+# TODO: Admin functionality, Doctor/patient page + rejected page, 
+# FUTURE TODO: HMAC for cookies and csrf tokens, Will have to handle - what if doctor deletes his account and user has open login window with availible doctor and then he scheldules an appointment with him and other corner cases
 
 app = Flask(__name__)
 
 
+@app.route('/delete', methods=['POST'])
+def delete():
+  if request.method == 'POST':
+    ssid = int(request.cookies.get('Ssid'))
+    cookie = request.cookies.get('Auth')
+    ipAddr = request.remote_addr
+    csrfToken = request.form.get('CSRFToken')
+    if not csrfToken:
+      return redirect('/') # For now redirect those unauthorized
+    ix = dbHandler.authorize(ssid, cookie, ipAddr, csrfToken)
+    if ix == -1:
+      return redirect('/')
+    dbHandler.logOut(ix)
+    dbHandler.removeUser(ix)
+    resp = make_response(redirect('/'))
+    resp.delete_cookie('Ssid')
+    resp.delete_cookie('Auth')
+    return resp
+
+
+@app.route('/logout', methods=['POST'])
+def logOut():
+  if request.method == 'POST':
+    ssid = int(request.cookies.get('Ssid'))
+    cookie = request.cookies.get('Auth')
+    ipAddr = request.remote_addr
+    csrfToken = request.form.get('CSRFToken')
+    if not csrfToken:
+      return redirect('/') # For now redirect those unauthorized
+    ix = dbHandler.authorize(ssid, cookie, ipAddr, csrfToken)
+    if ix == -1:
+      return redirect('/')
+    dbHandler.logOut(ix)
+    resp = make_response(redirect('/'))
+    resp.delete_cookie('Ssid')
+    resp.delete_cookie('Auth')
+    return resp
+
+
 @app.route('/loggedin', methods=['GET', 'POST'])
 def loggedIn():
-  ix = dbHandler.authorize(int(request.cookies.get('Ssid')), request.cookies.get('Auth'), request.remote_addr)
-  return str(ix)
+  if request.method == 'GET':
+    ssid = int(request.cookies.get('Ssid'))
+    cookie = request.cookies.get('Auth')
+    ipAddr = request.remote_addr
+    ix, csrfToken = dbHandler.authorize(ssid, cookie, ipAddr)
+    if ix == -1:
+      return redirect('/login')
+    privilegeLevel = dbHandler.getUserPrivilege(ix)
+    ########## ADD DIFFERENT TEMPLATES FOR DIFFERENT PRIVILEGES AND PEOPLE
+    return render_template('base.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -28,7 +75,7 @@ def loginPage():
     password = request.form.get('password')
     if not (username and password):
       return render_template('register.html', retmsg='Please enter all fields')
-    ssid, cookie, csrftoken, privLevel = dbHandler.logInUser(username, password, request.remote_addr)
+    ssid, cookie = dbHandler.logInUser(username, password, request.remote_addr)
     if ssid == -1:
       return redirect('/')
     resp = make_response(redirect('/loggedin'))

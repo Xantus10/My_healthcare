@@ -82,18 +82,3 @@ div.registerContainer {
   border-width: 1px;
   border-style: hidden hidden hidden solid;
 }
-
-div.footer {
-  flex: 1;
-  display: flex;
-  padding: 3%;
-  width: 100%;
-  background-color: white;
-  box-shadow: 0px -5px 30px #141414;
-  flex-direction: row;
-  justify-content: space-around;
-  position: absolute;
-  bottom: 0px;
-  font-size: 11px;
-  color: #646464;
-}

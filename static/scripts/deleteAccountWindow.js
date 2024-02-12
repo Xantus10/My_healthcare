@@ -1,7 +1,7 @@
 function showDeleteWindow() {
-  let window = document.getElementById("deletePopup");
+  document.getElementById("deletePopup").style.display = "flex";
 }
 
 function hideDeleteWindow() {
-
+  document.getElementById("deletePopup").style.display = "none";
 }
