@@ -1,0 +1,12 @@
+.content {
+  text-align: center;
+}
+
+.content h2 {
+  font-weight: 700;
+  font-size: 24px;
+}
+
+.content p {
+  font-size: 14px;
+}

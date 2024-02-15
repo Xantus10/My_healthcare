@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block childStylesheet %}<link rel="stylesheet" href='{{ url_for("static", filename="styles/pendingOrRejected.css") }}'>{% endblock %}
+{% block CSRFToken %}{{csrfToken}}{% endblock %}
+{% block content %}
+<h2>Welcome to Public healthcare system</h2>
+<p>We are very happy, that you decided to join us!</p>
+<p>Now just wait a few days until an admin verifies you.</p>
+{% endblock %}

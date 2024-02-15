@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block childStylesheet %}<link rel="stylesheet" href='{{ url_for("static", filename="styles/pendingOrRejected.css") }}'>{% endblock %}
+{% block CSRFToken %}{{csrfToken}}{% endblock %}
+{% block content %}
+<h2>Rejected</h2>
+<p>We are sorry, but you have been rejected.</p>
+<p>Please delete your account or contact the administrators if you think this is a mistake</p>
+{% endblock %}
