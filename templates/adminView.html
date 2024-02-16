@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block childStylesheet %}<link rel="stylesheet" href='{{ url_for("static", filename="styles/adminView.css") }}'>{% endblock %}
+{% block CSRFToken %}{{csrfToken}}{% endblock %}
+{% block content %}
+<h2>Hello Admin</h2>
+<form action="/validate" method="post">
+  <input type="hidden" name="CSRFToken" value="{{csrfToken}}">
+  <input type="hidden" name="lenOflist" value="{{lenOflist}}">
+  <div class="requestContainer">
+  {% for i in range(lenOflist) %}
+    <div class="rowContainer">
+      <p>{{dlist[i][0]}} - {{dlist[i][1]}} {{dlist[i][2]}} ({{dlist[i][3]}})</p>
+      <input type="hidden" name="indexOf{{i}}" value="{{dlist[i][0]}}">
+      <div>
+        <input type="radio" name="radio{{i}}" id="v{{i}}" value="Validate">
+        <label for="v{{i}}">Validate</label>
+        <input type="radio" name="radio{{i}}" id="r{{i}}" value="Reject">
+        <label for="r{{i}}">Reject</label>
+      </div>
+    </div>
+  {% endfor %}
+  </div>
+  <input type="submit" value="Submit" id="submit">
+</form>
+{% endblock %}

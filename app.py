@@ -3,7 +3,7 @@ from os import path
 
 import dbHandler
 
-# TODO: Admin functionality, Doctor/patient page
+# TODO: Doctor/patient page
 # FUTURE TODO: HMAC for cookies and csrf tokens, Will have to handle - what if doctor deletes his account and user has open login window with availible doctor and then he scheldules an appointment with him and other corner cases
 
 app = Flask(__name__)
@@ -48,6 +48,31 @@ def logOut():
     return resp
 
 
+@app.route('/validate', methods=['POST'])
+def validateOrRejectDoctor():
+  if request.method == 'POST':
+    ssid = int(request.cookies.get('Ssid'))
+    cookie = request.cookies.get('Auth')
+    ipAddr = request.remote_addr
+    csrfToken = request.form.get('CSRFToken')
+    if not csrfToken:
+      return redirect('/') # For now redirect those unauthorized
+    ix = dbHandler.authorize(ssid, cookie, ipAddr, csrfToken)
+    if ix == -1:
+      return redirect('/')
+    if int(dbHandler.getUserPrivilege(ix)) != 1:
+      return redirect('/')
+    lenOflist = request.form.get('lenOflist', type=int)
+    for i in range(lenOflist):
+      userId = request.form.get(f'indexOf{i}', type=int)
+      valOrRej = request.form.get(f'radio{i}')
+      if valOrRej == 'Validate':
+        dbHandler.validateDoctor(userId)
+      elif valOrRej == 'Reject':
+        dbHandler.rejectDoctor(userId)
+    return redirect('/loggedin')
+
+
 @app.route('/loggedin', methods=['GET', 'POST'])
 def loggedIn():
   if request.method == 'GET':
@@ -59,7 +84,8 @@ def loggedIn():
       return redirect('/login')
     privilegeLevel = dbHandler.getUserPrivilege(ix)
     if privilegeLevel == 1:
-      pass
+      doctorsList = dbHandler.getGroupFromPrivilege(4)
+      return render_template('adminView.html', csrfToken=CSRFToken, lenOflist=len(doctorsList), dlist = doctorsList)
     elif privilegeLevel == 2:
       pass
     elif privilegeLevel == 3:

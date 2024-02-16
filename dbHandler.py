@@ -38,8 +38,7 @@ def initialize():
     db = sqlite3.connect('data/database.db')
     cursor = db.cursor()
     # Table for users (Privilege level: 1-Admin 2-VerifiedDoctor 3-Patient 4-UnverifiedDoctor 10-RejectedDoctor)
-    cursor.execute('CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL UNIQUE, firstName TXT NOT NULL, lastName TEXT NOT NULL, salt TEXT NOT NULL, password TEXT NOT NULL, privilegeLevel INT NOT NULL, specialization TEXT);')
-    # Table for appointments
+    cursor.execute('CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL UNIQUE, firstName TXT NOT NULL, lastName TEXT NOT NULL, salt TEXT NOT NULL, password TEXT NOT NULL, privilegeLevel INT NOT NULL, specialization TEXT);')    # Table for appointments
     cursor.execute('CREATE TABLE IF NOT EXISTS appointments (id INTEGER PRIMARY KEY AUTOINCREMENT, patientId INTEGER NOT NULL, doctorId INTEGER NOT NULL, CONSTRAINT FK_patientId FOREIGN KEY(patientId) REFERENCES users(id),  CONSTRAINT FK_doctorId FOREIGN KEY(doctorId) REFERENCES users(id));')
     # Authentication table (With Session cookie, IP address, Session CSRF Token)
     cursor.execute('CREATE TABLE IF NOT EXISTS auth(ssid INTEGER PRIMARY KEY AUTOINCREMENT, userId INTEGER NOT NULL, cookie TEXT NOT NULL, ipAddress TEXT NOT NULL, CSRFToken TEXT NOT NULL, CONSTRAINT FK_userId FOREIGN KEY(userId) REFERENCES users(id));')
@@ -259,6 +258,25 @@ def rejectDoctor(ix):
     logger.log(f'An unexpected error occurred while validating a doctor; Error message: {e}')
   db.commit()
   return True
+
+
+def getGroupFromPrivilege(privLevel):
+  try:
+    db = sqlite3.connect('data/database.db')
+    cursor = db.cursor()
+    # Get all users of a privilege
+    res1 = cursor.execute('SELECT id, firstName, lastName, specialization FROM users WHERE privilegeLevel = ?;', (privLevel,))
+    res1 = res1.fetchall()
+    db.commit()
+    if res1:
+      return res1
+    return []
+  except sqlite3.Error as e:
+    logger.log(f'An error in SQL syntax occurred while retrieving users of privilege level; Error message: {e}; Data: {(privLevel)}')
+  except Exception as e:
+    logger.log(f'An unexpected error occurred while retrieving users of privilege level; Error message: {e}')
+  db.commit()
+  return []
 
 
 def removeUser(ix):
