@@ -73,6 +73,28 @@ def validateOrRejectDoctor():
     return redirect('/loggedin')
 
 
+@app.route('/makeAppointment', methods=['POST'])
+def makeAppointment():
+  if request.method == 'POST':
+    ssid = int(request.cookies.get('Ssid'))
+    cookie = request.cookies.get('Auth')
+    ipAddr = request.remote_addr
+    csrfToken = request.form.get('CSRFToken')
+    if not csrfToken:
+      return redirect('/') # For now redirect those unauthorized
+    ix = dbHandler.authorize(ssid, cookie, ipAddr, csrfToken)
+    if ix == -1:
+      return redirect('/')
+    if int(dbHandler.getUserPrivilege(ix)) != 3:
+      return redirect('/')
+    doctor = request.form.get('doctor', type=int)
+    date = request.form.get('date') # %Y-%m-%d
+    # maybe also verify if doctor is present in doctors table
+    if doctor and date:
+      dbHandler.makeAnAppointment(ix, doctor, date)
+    return redirect('/loggedin')
+
+
 @app.route('/loggedin', methods=['GET', 'POST'])
 def loggedIn():
   if request.method == 'GET':
@@ -89,7 +111,8 @@ def loggedIn():
     elif privilegeLevel == 2:
       pass
     elif privilegeLevel == 3:
-      pass
+      doctorsList = dbHandler.getGroupFromPrivilege(2)
+      return render_template('patient.html', csrfToken=CSRFToken, lenOflist=len(doctorsList), dlist = doctorsList)
     elif privilegeLevel == 4:
       return render_template('pendingDoctor.html', csrfToken=CSRFToken)
     elif privilegeLevel == 10:
@@ -165,6 +188,7 @@ def index():
 
 def main():
   dbHandler.initialize()
+  dbHandler.initializeAdminAccount()
   app.run(port=80)
 
 

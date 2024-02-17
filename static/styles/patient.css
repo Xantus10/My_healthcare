@@ -1,0 +1,45 @@
+.content {
+  text-align: center;
+  width: 50%;
+}
+
+.content h2 {
+  font-weight: 700;
+  font-size: 24px;
+}
+
+.content h4 {
+  font-weight: 500;
+  font-size: 18px;
+}
+
+.content p {
+  font-size: 14px;
+  text-align: left;
+}
+
+.requestContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background-color: antiquewhite;
+}
+
+#submit {
+  background-color: rgb(190, 20, 20);
+  padding: 10px;
+  color: white !important;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.dynamicDataContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.dynamicDataContainer div {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}

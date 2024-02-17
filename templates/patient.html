@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block childStylesheet %}<link rel="stylesheet" href='{{ url_for("static", filename="styles/patient.css") }}'>{% endblock %}
+{% block CSRFToken %}{{csrfToken}}{% endblock %}
+{% block content %}
+<h2>Welcome to public healthcare!</h2>
+<h4>Schledule an appointment with our professionals!</h4>
+<div class="dynamicDataContainer">
+<form action="/makeAppointment" method="post">
+  <input type="hidden" name="CSRFToken" value="{{csrfToken}}">
+  <div class="requestContainer">
+    <input type="date" name="date" id="date">
+    <select name="doctor" id="doctor">
+    {% for i in range(lenOflist) %}
+      <option value="{{dlist[i][0]}}">{{dlist[i][1]}} {{dlist[i][2]}} ({{dlist[i][3]}})</option>
+    {% endfor %}
+  </select>
+  <input type="submit" value="Submit" id="submit">
+  </div>
+</form>
+<div>
+  <!--Display appointments here-->
+</div>
+</div>
+{% endblock %}

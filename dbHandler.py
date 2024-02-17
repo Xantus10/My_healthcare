@@ -39,7 +39,7 @@ def initialize():
     cursor = db.cursor()
     # Table for users (Privilege level: 1-Admin 2-VerifiedDoctor 3-Patient 4-UnverifiedDoctor 10-RejectedDoctor)
     cursor.execute('CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL UNIQUE, firstName TXT NOT NULL, lastName TEXT NOT NULL, salt TEXT NOT NULL, password TEXT NOT NULL, privilegeLevel INT NOT NULL, specialization TEXT);')    # Table for appointments
-    cursor.execute('CREATE TABLE IF NOT EXISTS appointments (id INTEGER PRIMARY KEY AUTOINCREMENT, patientId INTEGER NOT NULL, doctorId INTEGER NOT NULL, CONSTRAINT FK_patientId FOREIGN KEY(patientId) REFERENCES users(id),  CONSTRAINT FK_doctorId FOREIGN KEY(doctorId) REFERENCES users(id));')
+    cursor.execute('CREATE TABLE IF NOT EXISTS appointments (id INTEGER PRIMARY KEY AUTOINCREMENT, patientId INTEGER NOT NULL, doctorId INTEGER NOT NULL, date TEXT NOT NULL, CONSTRAINT FK_patientId FOREIGN KEY(patientId) REFERENCES users(id),  CONSTRAINT FK_doctorId FOREIGN KEY(doctorId) REFERENCES users(id));')
     # Authentication table (With Session cookie, IP address, Session CSRF Token)
     cursor.execute('CREATE TABLE IF NOT EXISTS auth(ssid INTEGER PRIMARY KEY AUTOINCREMENT, userId INTEGER NOT NULL, cookie TEXT NOT NULL, ipAddress TEXT NOT NULL, CSRFToken TEXT NOT NULL, CONSTRAINT FK_userId FOREIGN KEY(userId) REFERENCES users(id));')
   except sqlite3.Error as e:
@@ -300,25 +300,53 @@ def removeUser(ix):
 
 
 # Make an appointment with doctor
-def makeAnAppointment(patientId, doctorId):
+def makeAnAppointment(patientId, doctorId, date):
   try:
     db = sqlite3.connect('data/database.db')
     cursor = db.cursor()
     # Check if the appointment doesn't already exist
-    res = cursor.execute('SELECT id FROM patientsdoctorsAppointments WHERE patientId = ? AND doctorId = ?;', (patientId, doctorId))
+    res = cursor.execute('SELECT id FROM appointments WHERE patientId = ? AND doctorId = ? AND date = ?;', (patientId, doctorId, date))
     res = res.fetchall()
     if res:
       # If it exists we log it as 'Message' for now
       logger.log(f'User {patientId} tried appointing another appointment with doctor {doctorId}, while his appointment is already present', 1)
     else:
       # If it does not exist we will create one
-      cursor.execute('INSERT INTEGERO patientsdoctorsAppointments(patientId, doctorId) VALUES(?, ?);', (patientId, doctorId))
+      cursor.execute('INSERT INTO appointments(patientId, doctorId, date) VALUES(?, ?, ?);', (patientId, doctorId, date))
   except sqlite3.Error as e:
-    logger.log(f'An error in SQL syntax occurred while making an appointment; Error message: {e}; Data: {(patientId, doctorId)}')
+    logger.log(f'An error in SQL syntax occurred while making an appointment; Error message: {e}; Data: {(patientId, doctorId, date)}')
   except Exception as e:
     logger.log(f'An unexpected error occurred while making an appointment; Error message: {e}')
   db.commit()
   return True
+
+
+# Can either get appointments by patientId or doctorId
+def getAppointments(ix, sideOfAppointments='PATIENT'):
+  try:
+    db = sqlite3.connect('data/database.db')
+    cursor = db.cursor()
+    if sideOfAppointments == 'PATIENT':
+      res = cursor.execute('SELECT appointments.id, users.firstName, users.lastName, appointments.date FROM appointments INNER JOIN users ON appointments.doctorId = users.id WHERE appointments.patientId = ? ORDER BY appointments.date ASC;', (ix,))
+    elif sideOfAppointments == 'DOCTOR':
+      res = cursor.execute('SELECT appointments.id, users.firstName, users.lastName, appointments.date FROM appointments INNER JOIN users ON appointments.patientId = users.id WHERE appointments.doctorId = ? ORDER BY appointments.date ASC;', (ix,))
+    res = res.fetchall()
+    db.commit()
+    if res:
+      return res
+    else:
+      return []
+  except sqlite3.Error as e:
+    logger.log(f'An error in SQL syntax occurred while getting appointments; Error message: {e}; Data: {(ix, sideOfAppointments)}')
+  except Exception as e:
+    logger.log(f'An unexpected error occurred while getting appointments; Error message: {e}')
+  db.commit()
+  return []
+
+
+def initializeAdminAccount():
+  if not checkIfUsernameExists('Admin12345'):
+    addUser('Admin12345', 'Admin12345', 'Admin12345', 'Admin12345', 1)
 
 
 # After having an appointment, doctor can erase it
