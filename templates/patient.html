@@ -3,9 +3,9 @@
 {% block CSRFToken %}{{csrfToken}}{% endblock %}
 {% block content %}
 <h2>Welcome to public healthcare!</h2>
-<h4>Schledule an appointment with our professionals!</h4>
 <div class="dynamicDataContainer">
 <form action="/makeAppointment" method="post">
+  <h4>Schledule an appointment</h4>
   <input type="hidden" name="CSRFToken" value="{{csrfToken}}">
   <div class="requestContainer">
     <input type="date" name="date" id="date">
@@ -18,7 +18,12 @@
   </div>
 </form>
 <div>
-  <!--Display appointments here-->
+  <h4>Your appointments</h4>
+  {% for i in range(lenOfalist) %}
+    <div class="rowContainer">
+      <p>{{alist[i][3]}} - {{alist[i][1]}} {{alist[i][2]}}</p>
+    </div>
+  {% endfor %}
 </div>
 </div>
 {% endblock %}

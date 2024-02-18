@@ -3,7 +3,7 @@ from os import path
 
 import dbHandler
 
-# TODO: Doctor/patient page
+# TODO: Doctor page
 # FUTURE TODO: HMAC for cookies and csrf tokens, Will have to handle - what if doctor deletes his account and user has open login window with availible doctor and then he scheldules an appointment with him and other corner cases
 
 app = Flask(__name__)
@@ -112,7 +112,8 @@ def loggedIn():
       pass
     elif privilegeLevel == 3:
       doctorsList = dbHandler.getGroupFromPrivilege(2)
-      return render_template('patient.html', csrfToken=CSRFToken, lenOflist=len(doctorsList), dlist = doctorsList)
+      appointmentslist = dbHandler.getAppointments(ix)
+      return render_template('patient.html', csrfToken=CSRFToken, lenOflist=len(doctorsList), dlist = doctorsList, lenOfalist=len(appointmentslist), alist=appointmentslist)
     elif privilegeLevel == 4:
       return render_template('pendingDoctor.html', csrfToken=CSRFToken)
     elif privilegeLevel == 10:

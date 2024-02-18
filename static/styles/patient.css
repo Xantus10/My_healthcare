@@ -23,6 +23,7 @@
   flex-direction: column;
   gap: 6px;
   background-color: antiquewhite;
+  align-items: left;
 }
 
 #submit {
@@ -36,10 +37,30 @@
 .dynamicDataContainer {
   display: flex;
   flex-direction: row;
+  justify-content: space-around;
 }
 
 .dynamicDataContainer div {
   display: flex;
   flex-direction: column;
   flex: 1;
+  gap: 6px;
+  align-items: center;
+}
+
+.rowContainer {
+  display: flex;
+  width: 350px;
+  min-width: 250px;
+  min-height: 50px;
+  border-style: solid;
+  border-color: black;
+  border-width: 1px;
+  border-radius: 20px;
+  background-color: rgb(255, 225, 185);
+  padding-left: 25px;
+  padding-right: 25px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
