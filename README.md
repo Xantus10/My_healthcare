@@ -1,7 +1,11 @@
 # My Healthcare  
 
-This is a project written in python using Flask and sqlite. The idea is to create an application, where you can either be a doctor and be availible for patients or as a patient you can schedule appointments with doctors.  
+A simple web application for Public healthcare system. You can register as a doctor and, after being verified, be availible for public use. Or register as a patient and schledule appointments with doctors.  
 
-### NOTICE  
+## Usage  
 
-Still under construction, not functional.  
+Simply clone the repository and run app.py  
+
+## Tech  
+
+Built with Python-Flask and sqlite  

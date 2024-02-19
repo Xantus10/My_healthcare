@@ -350,5 +350,21 @@ def initializeAdminAccount():
 
 
 # After having an appointment, doctor can erase it
-def doneAppointment(ix):
-  pass
+def doneAppointment(ix, doctorId):
+  try:
+    db = sqlite3.connect('data/database.db')
+    cursor = db.cursor()
+    # Find a user
+    appointment = cursor.execute('SELECT date FROM appointments WHERE id = ? AND doctorId = ?;', (ix, doctorId))
+    appointment = appointment.fetchone()
+    if appointment:
+      cursor.execute('DELETE FROM appointments WHERE id = ?', (ix,))
+    else:
+      # If we were unable to find the id in appointments, we log it as a warning
+      logger.log(f'Recieved remove request for id({ix}) by doctor({doctorId}), however requested row is not present in appointments table, aborting', 2)
+  except sqlite3.Error as e:
+    logger.log(f'An error in SQL syntax occurred while removing an appointment; Error message: {e}; Data: {(ix, doctorId)}')
+  except Exception as e:
+    logger.log(f'An unexpected error occurred while removing a appointment; Error message: {e}')
+  db.commit()
+  return True

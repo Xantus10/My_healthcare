@@ -95,6 +95,27 @@ def makeAppointment():
     return redirect('/loggedin')
 
 
+@app.route('/doneAppointment', methods=['POST'])
+def doneAppointment():
+  if request.method == 'POST':
+    ssid = int(request.cookies.get('Ssid'))
+    cookie = request.cookies.get('Auth')
+    ipAddr = request.remote_addr
+    csrfToken = request.form.get('CSRFToken')
+    if not csrfToken:
+      return redirect('/') # For now redirect those unauthorized
+    ix = dbHandler.authorize(ssid, cookie, ipAddr, csrfToken)
+    if ix == -1:
+      return redirect('/')
+    if int(dbHandler.getUserPrivilege(ix)) != 2:
+      return redirect('/')
+    appointment = request.form.get('appointmentIx', type=int)
+    # 
+    if appointment:
+      dbHandler.doneAppointment(appointment, ix)
+    return redirect('/loggedin')
+
+
 @app.route('/loggedin', methods=['GET', 'POST'])
 def loggedIn():
   if request.method == 'GET':
@@ -109,7 +130,8 @@ def loggedIn():
       doctorsList = dbHandler.getGroupFromPrivilege(4)
       return render_template('adminView.html', csrfToken=CSRFToken, lenOflist=len(doctorsList), dlist = doctorsList)
     elif privilegeLevel == 2:
-      pass
+      appointmentslist = dbHandler.getAppointments(ix, 'DOCTOR')
+      return render_template('doctor.html', csrfToken=CSRFToken, lenOfalist=len(appointmentslist), alist=appointmentslist)
     elif privilegeLevel == 3:
       doctorsList = dbHandler.getGroupFromPrivilege(2)
       appointmentslist = dbHandler.getAppointments(ix)

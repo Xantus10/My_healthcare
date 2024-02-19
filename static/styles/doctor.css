@@ -1,0 +1,53 @@
+.content {
+  text-align: center;
+  width: 50%;
+}
+
+.content h2 {
+  font-weight: 700;
+  font-size: 24px;
+}
+
+.content h4 {
+  font-weight: 500;
+  font-size: 18px;
+}
+
+.content p {
+  font-size: 14px;
+  text-align: left;
+}
+
+.appointmentsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background-color: antiquewhite;
+  align-items: left;
+}
+
+#submit {
+  background-color: rgb(126, 235, 37);
+  color: black !important;
+  font-weight: 400;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.rowContainer {
+  display: flex;
+  width: 550px;
+  min-width: 350px;
+  min-height: 50px;
+  border-style: solid;
+  border-color: black;
+  border-width: 1px;
+  border-radius: 20px;
+  background-color: rgb(255, 225, 185);
+  padding-left: 25px;
+  padding-right: 25px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}

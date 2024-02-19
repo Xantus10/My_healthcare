@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block childStylesheet %}<link rel="stylesheet" href='{{ url_for("static", filename="styles/doctor.css") }}'>{% endblock %}
+{% block CSRFToken %}{{csrfToken}}{% endblock %}
+{% block content %}
+<h2>Welcome to public healthcare!</h2>
+<h4>Your schleduled appointments</h4>
+<div class="appointmentsContainer">
+{% for i in range(lenOfalist) %}
+<form action="/doneAppointment" method="post">
+  <input type="hidden" name="CSRFToken" value="{{csrfToken}}">
+  <input type="hidden" name="appointmentIx" value="{{alist[i][0]}}">
+  <div class="rowContainer">
+    <p>{{alist[i][3]}} - {{alist[i][1]}} {{alist[i][2]}}</p>
+    <input type="submit" value="Done" id="submit">
+  </div>
+</form>
+{% endfor %}
+</div>
+{% endblock %}
